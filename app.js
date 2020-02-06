@@ -85,14 +85,14 @@ app.get('/:place', function(req, res){
           name: place,
           items: defaultItems
         });
-        list.save();
-        res.redirect('/' + place);        
+        list.save(function(err){
+          if (!err) {
+            res.redirect('/' + place); 
+          }
+        });               
       }
     }
-  })
-  
-
-  //list.save();
+  });  
 });
 
 app.post("/", function(req, res){
@@ -103,13 +103,25 @@ app.post("/", function(req, res){
     name: itemName
   });
   if (listName === 'Today') {
-  item.save();
-  res.redirect('/');
+  item.save(function(err){
+    if (err){
+      console.log(err);
+    } else {
+      res.redirect('/');
+    }
+  });
+  
   } else {
     List.findOne({name: listName}, function(err, foundList){ if (!err) {
         foundList.items.push(item);
-        foundList.save();
-        res.redirect('/'+ listName);
+        foundList.save(function(err){
+          if (err) {
+            console.log(err);
+          } else {
+            res.redirect('/'+ listName);
+          }
+        });
+        
       }
     });
   }
