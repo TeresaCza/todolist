@@ -83,7 +83,17 @@ app.get("/", function (req, res) {
   });
 });
 
-app.get('/:place', function (req, res) {
+app.get('/lists', function(req, res){
+  List.find({}, function(err, results){
+    if (!err) {
+      res.render('list', {listTitle: 'Custom Lists', newListItems: results});
+    } else {
+      console.log(err);
+    }
+  });
+});
+
+app.get('/lists/:place', function (req, res) {
   const place = _.capitalize(req.params.place);
 
   List.findOne({
@@ -106,7 +116,7 @@ app.get('/:place', function (req, res) {
         });
         list.save(function (err) {
           if (!err) {
-            res.redirect('/' + place);
+            res.redirect('/lists/' + place);
           }
         });
       }
@@ -130,6 +140,16 @@ app.post("/", function (req, res) {
       }
     });
 
+  } else if (listName === 'Custom Lists'){
+    const list = new List({
+      name: _.capitalize(itemName),
+      items: defaultItems
+    });
+    list.save(function(err){
+      if (!err) {
+        res.redirect('/lists')
+      }
+    });
   } else {
     List.findOne({
       name: listName
@@ -140,7 +160,7 @@ app.post("/", function (req, res) {
           if (err) {
             console.log(err);
           } else {
-            res.redirect('/' + listName);
+            res.redirect('/lists/' + listName);
           }
         });
       }
@@ -163,6 +183,15 @@ app.post('/delete', function (req, res) {
         res.redirect('/');
       }
     });
+  } else if (listName === 'Custom Lists') {
+    List.deleteOne({_id: checkedItemId}, function(err){
+      if (err) {
+        console.log(err);
+      } else {
+        console.log('Successfully deleted list from DB');
+        res.redirect('/lists');
+      }
+    });
   } else {
     List.findOneAndUpdate({
       name: listName
@@ -174,7 +203,7 @@ app.post('/delete', function (req, res) {
       }
     }, function (err, foundList) {
       if (!err) {
-        res.redirect('/' + listName);
+        res.redirect('/lists/' + listName);
       }
     });
   }

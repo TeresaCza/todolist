@@ -1,5 +1,9 @@
 <%- include("header") -%>
 
+  <header>
+    <a href="/">Main List</a><br>
+    <a href="/lists">Custom Lists</a>
+  </header>
   <div class="box" id="heading">
     <h1> <%= listTitle %> </h1>
   </div>
@@ -9,7 +13,11 @@
       <form action="/delete" method="post">
       <div class="item">
         <input type="checkbox" name="checkbox" value="<%= item._id %>" onChange="this.form.submit()">
+        <% if (listTitle === 'Custom Lists') { %>
+          <p><a href="/lists/<%= item.name %>"><%=  item.name  %></a></p>
+        <% } else { %>
         <p><%=  item.name  %></p>
+       <% } %>
       </div>
       <input type="hidden" name="listName" value="<%= listTitle %>">
     </form>
