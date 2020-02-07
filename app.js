@@ -4,6 +4,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require('mongoose');
 const _ = require('lodash');
+const helper = require('./helper');
 
 
 const app = express();
@@ -13,7 +14,7 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 
-mongoose.connect('mongodb+srv://admin-teresa:teresa06@cluster0-ntuud.mongodb.net/todolistDB', {useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.DBURL ||helper.dbUrl, {useNewUrlParser: true, useUnifiedTopology: true });
 
 mongoose.set('useFindAndModify', false);
 
