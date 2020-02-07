@@ -176,7 +176,7 @@ app.post('/delete', function (req, res) {
       if (!err) {
         res.redirect('/' + listName);
       }
-    })
+    });
   }
 });
 
